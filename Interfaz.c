@@ -13,18 +13,10 @@ En el caso de la interfaz, se deben considerar los siguientes aspectos:
 #define MAX_NAME_LENGTH 15
 #define MAX_CLAVE_LENGTH 10
 
-//Estructura para representar un usuario
-typedef struct{
-  char nombreUser[MAX_NAME_LENGTH];
-  char clave[MAX_CLAVE_LENGTH];
-}Usuario;
 
 //NO SON NECESARIAS LAS FUNCIONES DE INTERFAZ, SOLO PARA EL CODIGO DE PRUEBA
 //LAS FUNCIONES SE ESTAN CREANDO EN EL ARCHIVO MAIN
-void mainRegistrar(Usuario* usuarios, int* numUsuarios);
-void mainIngresar(Usuario* usuarios, int numUsuarios);
-void mainVerUsuarios(Usuario* usuarios, int numUsuarios);
-void menu();
+
 //Funcion principal
 /*
 int main(){
@@ -142,66 +134,4 @@ int main(){
   }
 }
 */
-//Funcion para registrar a un nuevo usuario
-void mainRegistrar(Usuario* usuarios, int* numUsuarios){
-  //Verifica si se alcanzo el limite de usuarios maximos
-  if(*numUsuarios >= MAX_USERS){
-    printf("\t\t\tNo se pueden registrar mas usuarios");
-    printf("\t\t==================================\n");
-    return;
-  }
-
-  //Solicita al usuario ingresar los datos de nuevo usuario
-  printf("\n\t\t\tREGISTRAR USUARIO\n");
-  printf("\t\t==================================\n");
-  printf("\t\tNombre de usuario: ");
-  scanf("%s", usuarios[*numUsuarios].nombreUser);
-  printf("\t\tClave: ");
-  scanf("%s", usuarios[*numUsuarios].clave);
-  printf("\t\t==================================\n");
-
-  //Incrementa el contador de usuarios y muestra un mensaje de exito
-  (*numUsuarios)++;
-  printf("\t\tUsuario registrado exitosamente\n");
-  printf("\t\t==================================\n");
-}
-
-//Funcion para iniciar sesion
-void mainIngresar(Usuario* usuarios, int numUsuarios){
-  char nombreUser[MAX_NAME_LENGTH];
-  char clave[MAX_CLAVE_LENGTH];
-
-  //Solicita al usuario ingresar nombre de usuario y clave para el inicio de sesion
-  printf("\n\t\t\tINGRESAR AL SISTEMA\n");
-  printf("\t\t==================================\n");
-
-  printf("\n\t\tUSUARIO: ");
-  scanf("%s", nombreUser);
-  printf("\n\t\tCLAVE: ");
-  scanf("%s", clave);
-  printf("\t\t==================================\n");
-
-  //Itera sobre los usuarios registrados para verificar las credenciales
-  for(int i = 0; i < numUsuarios; i++){
-    if(strcmp(usuarios[i].nombreUser, nombreUser) == 0 && strcmp(usuarios[i].clave,clave)==0){
-      printf("\n\t\tInicio de sesion exitoso\n");
-      printf("\n\t\tBienvenido, %s\n",nombreUser);
-      return; //Exito
-    }
-  }
-
-  //Muestra un mensaje de error si las credenciales son incorrectas
-  printf("\t\tUsuario o clave incorrecta.\n");
-  printf("\t\tIntente de nuevo.\n");
-  return;
-}
-
-//Funcion para mostrar los usuarios registrados
-void mainVerUsuarios(Usuario* usuarios, int numUsuarios){
-  printf("\n\t\t\tUSUARIOS REGISTRADOS\n");
-  printf("\t\t==================================\n");
-  for(int i = 0; i < numUsuarios; i++){
-    printf("\n\t\t %s\n", usuarios[i].nombreUser);
-  }
-  printf("\t\t==================================\n");
-}
+//ELIMINE TODAS LAS FUNCIONES YA QUE SOLO DEBIAN SER ILUSTRATIVAS YA QUE LA MANERA DE REGISTRAR Y VER LOS USUARIOS REGISTRADOS SE HACE MEDIANTE LAS ESTRUCTURAS DE DATOS ELEGIDAS

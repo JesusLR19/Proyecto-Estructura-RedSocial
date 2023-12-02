@@ -20,6 +20,7 @@ typedef struct {
  * alpha de comentarios solamente. EDT: Ahora es una lista doblemente enlazada,
  * sugerencia realizada por Jesus Eduardo*/
 struct Comentarios {
+  int idComentario;
   char comentario[MED];
   char autor[10];
   struct Comentarios *siguiente;
@@ -36,17 +37,17 @@ struct Publicaciones {
 };
 typedef struct Notif {
   char msg[MIN];
-}Notif;
+} Notif;
 // Nodo de cola simple para las notificaciones
 typedef struct NodoCola {
   Notif notif;
   struct NodoCola *sgt;
 } NodoCola;
-//Estructura de la cola para las notificaciones
-typedef struct Cola{
+// Estructura de la cola para las notificaciones
+typedef struct Cola {
   NodoCola *ini;
   NodoCola *fin;
-}Cola;
+} Cola;
 
 typedef struct ListaFeed { // El nodo de nuestra lista doblemente enlazada para
                            // el timeline de publicaciones
@@ -60,7 +61,8 @@ typedef struct NodoUsuario {
   Usuario user;
   struct NodoUsuario *izquierda;
   struct NodoUsuario *derecha;
-  struct NodoUsuario **amigos;//Arreglo de punteros tipo NodoUsuario para apuntar a otros nodos amigos
+  struct NodoUsuario **amigos; // Arreglo de punteros tipo NodoUsuario para
+                               // apuntar a otros nodos amigos
   Cola *notificaciones;
   int numNotif;
   int num_amigos; // Contador para saber cuantos amigos cuenta cada usuario
@@ -71,10 +73,10 @@ typedef struct NodoUsuario {
 
 NodoUsuario *sesionActual; // Creamos un puntero global de tipo NodoUsuario para
                            // ayudarnos a mantener una sesion iniciada
-//Funcion para crear cola [Jesus E. Lopez]
-Cola *crearCola(){
-  Cola *c = (Cola*)malloc(sizeof(Cola));
-  if (c == NULL){
+// Funcion para crear cola [Jesus E. Lopez]
+Cola *crearCola() {
+  Cola *c = (Cola *)malloc(sizeof(Cola));
+  if (c == NULL) {
     puts("Error al asignar memoria para la cola");
     return 0;
   }
@@ -82,13 +84,12 @@ Cola *crearCola(){
   c->fin = NULL;
   return c;
 }
-NodoCola *crearNodo(char *msg){
-  NodoCola *c = (NodoCola*)malloc(sizeof(NodoCola));
-  strcpy(c->notif.msg,msg);
+NodoCola *crearNodo(char *msg) {
+  NodoCola *c = (NodoCola *)malloc(sizeof(NodoCola));
+  strcpy(c->notif.msg, msg);
   c->sgt = NULL;
   return c;
 }
-
 
 NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
   if (raiz == NULL) {    // Verificamos si la raiz es null,
@@ -110,7 +111,8 @@ NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
 
 // Funcion para registrar un nuevo usuario [Jesus E. Lopez]
 NodoUsuario *registrarNuevoUsuario(NodoUsuario *raiz) {
-  NodoUsuario *nuevoUsuario = (NodoUsuario *)malloc(sizeof(NodoUsuario)); // Creamos un nuevo nodo
+  NodoUsuario *nuevoUsuario =
+      (NodoUsuario *)malloc(sizeof(NodoUsuario)); // Creamos un nuevo nodo
   if (!nuevoUsuario) {
     printf("Error al asignar memoria para el nuevo usuario");
     return NULL;
@@ -119,43 +121,46 @@ NodoUsuario *registrarNuevoUsuario(NodoUsuario *raiz) {
   // Inicializamos los punteros del nuevo nodo
   nuevoUsuario->izquierda = NULL;
   nuevoUsuario->derecha = NULL;
-  //Ingresar los valores para cada campo del nodo usuario
+  // Ingresar los valores para cada campo del nodo usuario
   fflush(stdin);
   printf("Ingresa el nombre de usuario: ");
-  fgets(nuevoUsuario->user.nombre_usuario,sizeof(nuevoUsuario->user.nombre_usuario), stdin);
+  fgets(nuevoUsuario->user.nombre_usuario,
+        sizeof(nuevoUsuario->user.nombre_usuario), stdin);
   strtok(nuevoUsuario->user.nombre_usuario, "\n");
   printf("Ingresa el nombre completo: ");
-  fgets(nuevoUsuario->user.nombre_completo,sizeof(nuevoUsuario->user.nombre_completo), stdin);
+  fgets(nuevoUsuario->user.nombre_completo,
+        sizeof(nuevoUsuario->user.nombre_completo), stdin);
   strtok(nuevoUsuario->user.nombre_completo, "\n");
   printf("Ingresa tu correo electronico: ");
-  fgets(nuevoUsuario->user.correo_electronico,sizeof(nuevoUsuario->user.correo_electronico), stdin);
+  fgets(nuevoUsuario->user.correo_electronico,
+        sizeof(nuevoUsuario->user.correo_electronico), stdin);
   strtok(nuevoUsuario->user.correo_electronico, "\n");
   printf("Ingresa tu password: ");
-  fgets(nuevoUsuario->user.password, sizeof(nuevoUsuario->user.password),stdin);
+  fgets(nuevoUsuario->user.password, sizeof(nuevoUsuario->user.password),
+        stdin);
   strtok(nuevoUsuario->user.password, "\n");
 
   //====================================================================================
-  NodoCola *cola = (NodoCola*)malloc(sizeof(NodoCola));
-  if(!cola){
+  NodoCola *cola = (NodoCola *)malloc(sizeof(NodoCola));
+  if (!cola) {
     puts("Error al asignar memoria para la cola");
     return NULL;
   }
-  //Inicializamos la cola
+  // Inicializamos la cola
   nuevoUsuario->notificaciones = crearCola();
   nuevoUsuario->notificaciones->ini = NULL;
   nuevoUsuario->notificaciones->fin = NULL;
   char msgBienvenida[MIN] = "Bienvenido a la red social!";
-  strcpy(cola->notif.msg,msgBienvenida);
+  strcpy(cola->notif.msg, msgBienvenida);
   cola->sgt = NULL;
   nuevoUsuario->numNotif = 1;
-  if(nuevoUsuario->notificaciones->ini == NULL){
+  if (nuevoUsuario->notificaciones->ini == NULL) {
     nuevoUsuario->notificaciones->ini = cola;
-  }else{
+  } else {
     nuevoUsuario->notificaciones->fin->sgt = cola;
   }
   nuevoUsuario->notificaciones->fin = cola;
-  
-  
+
   //====================================================================================
   printf("Usuario registrado correctamente\n");
   nuevoUsuario->num_amigos = 0; // Inicializamos el numero de amigos en cero
@@ -185,7 +190,7 @@ NodoUsuario *buscarUsuarioArbol(NodoUsuario *actual, char *nombre_usuario) {
     return buscarUsuarioArbol(actual->izquierda, nombre_usuario);
   }
 }
-//Funcion de para iniciar sesion [Jesus E. Lopez]
+// Funcion de para iniciar sesion [Jesus E. Lopez]
 void menuInicioSesion(NodoUsuario *raiz) {
   // Definimos variables que ingresara el usuario para buscar y comparar en el
   // arbol
@@ -208,7 +213,7 @@ void menuInicioSesion(NodoUsuario *raiz) {
     printf("Error al iniciar sesion, contraseña o usuario incorrectos\n");
   }
 }
-//Funcion para cerrar sesion [Jesus E. Lopez]
+// Funcion para cerrar sesion [Jesus E. Lopez]
 void cerrarSesion() {
   sesionActual = NULL;
   printf("Sesion cerrada\n");
@@ -223,7 +228,8 @@ void agregarAmigo(NodoUsuario *raiz) {
   if (sesionActual->num_amigos == sesionActual->max_amigos) {
     // Duplicamos los amigos maximos que puede tener y reasignamos la memoria
     sesionActual->max_amigos = sesionActual->max_amigos * 2;
-    sesionActual->amigos = (NodoUsuario **)realloc(sesionActual->amigos, sizeof(NodoUsuario *) * sesionActual->max_amigos);
+    sesionActual->amigos = (NodoUsuario **)realloc(
+        sesionActual->amigos, sizeof(NodoUsuario *) * sesionActual->max_amigos);
     if (!sesionActual->amigos) {
       printf("Error al asignar memoria para los amigos, No hay mas espacio en "
              "memoria.");
@@ -234,7 +240,8 @@ void agregarAmigo(NodoUsuario *raiz) {
   char nombre_amigo[10];
   NodoUsuario *amigo;
   // Pedimos el nombre del amigo
-  printf("Ingresa el nombre de usuario del amigo a enviar solicitud de amistad: ");
+  printf(
+      "Ingresa el nombre de usuario del amigo a enviar solicitud de amistad: ");
   scanf("%s", nombre_amigo);
   // Buscamos el amigo en el arbol
   amigo = buscarUsuarioArbol(raiz, nombre_amigo);
@@ -242,23 +249,26 @@ void agregarAmigo(NodoUsuario *raiz) {
     printf("Usuario no encontrado\n");
     return;
   }
-  char noti[MIN]; //Cadena de caracteres para almacenar el nombre de la sesion actual
-  char add[MIN] = " te envio una solicitud de amistad"; //Cadena para acompletar el mensaje
-  strcpy(noti,sesionActual->user.nombre_usuario); //Obtenemos el nombre del usuario actual
-  strcat(noti,add); //Concatenamos las cadenas de caracteres
+  char noti[MIN]; // Cadena de caracteres para almacenar el nombre de la sesion
+                  // actual
+  char add[MIN] =
+      " te envio una solicitud de amistad"; // Cadena para acompletar el mensaje
+  strcpy(noti, sesionActual->user
+                   .nombre_usuario); // Obtenemos el nombre del usuario actual
+  strcat(noti, add);                 // Concatenamos las cadenas de caracteres
 
-  //Insertamos nuevo nodo con nueva notificacion al amigo
-  if(!amigo->notificaciones->ini){
+  // Insertamos nuevo nodo con nueva notificacion al amigo
+  if (!amigo->notificaciones->ini) {
     amigo->notificaciones->ini = crearNodo(noti);
-  }else{
+  } else {
     amigo->notificaciones->fin->sgt = crearNodo(noti);
   }
   amigo->notificaciones->fin = crearNodo(noti);
-  //TERMINA INSERCION
- 
+  // TERMINA INSERCION
+
   amigo->numNotif++;
   sesionActual->amigos[sesionActual->num_amigos++] = amigo;
-  
+
   printf("Solicitud de amistad enviada a %s\n", amigo->user.nombre_usuario);
 }
 // Funcion para enviar solicitud de amistad [Jesus E. Lopez]
@@ -271,7 +281,7 @@ void enviarSolicitud(NodoUsuario *raiz) {
   // y enviar la solicitud
   agregarAmigo(raiz);
 }
-//Funcion para aceptar solicitudes [Jesus E. Lopez]
+// Funcion para aceptar solicitudes [Jesus E. Lopez]
 void aceptarSolicitud(NodoUsuario *raiz) {
   if (sesionActual == NULL) {
     printf("Inicia sesion para poder aceptar solicitudes\n");
@@ -289,7 +299,7 @@ void aceptarSolicitud(NodoUsuario *raiz) {
     printf("El usuario no se encuentra en la red social\n");
     return;
   }
-  
+
   // Añadimos el usuario al arreglo de amigos del usuario
   sesionActual->amigos[sesionActual->num_amigos] = usuario;
   sesionActual->num_amigos++;
@@ -298,132 +308,152 @@ void aceptarSolicitud(NodoUsuario *raiz) {
          usuario->user.nombre_usuario);
 }
 
-
-//Funcion que recorre los amigos que tienes agregados y los imprime por pantalla[Jesus E. Lopez]
-void mostrarAmigos(){
+// Funcion que recorre los amigos que tienes agregados y los imprime por
+// pantalla[Jesus E. Lopez]
+void mostrarAmigos() {
   printf("Amigos de %s\n", sesionActual->user.nombre_usuario);
   for (int i = 0; i < sesionActual->num_amigos; i++) {
     printf("- %s\n", sesionActual->amigos[i]->user.nombre_usuario);
   }
 }
-//Funcion para mostrar las notif. de la sesion actual [Jesus E. Lopez]
-void mostrarNotif(){
+// Funcion para mostrar las notif. de la sesion actual [Jesus E. Lopez]
+void mostrarNotif() {
   NodoCola *aux = sesionActual->notificaciones->ini;
-  if(!aux){
+  if (!aux) {
     printf("No tienes notificaciones\n");
     return;
   }
-  printf("Tienes %d notificaciones \n",sesionActual->numNotif);
-  while(aux != NULL){
-    printf("%s\n",aux->notif.msg);
+  printf("Tienes %d notificaciones \n", sesionActual->numNotif);
+  while (aux != NULL) {
+    printf("%s\n", aux->notif.msg);
     aux = aux->sgt;
   }
 }
+// Funcion para comentar en los posts, llamada por la funcion VerMuro [Daniel
+// G.]
+void comentarpost(struct Publicaciones *publicacion, char *nombreUsuario) {
+  // Crea un nuevo nodo de comentario
+  struct Comentarios *nuevoComentario =
+      (struct Comentarios *)malloc(sizeof(struct Comentarios));
 
-/*
-// MI GENTE TAMO EN ALPHA 2.0
-// Funciones 2.0, ahora sin timestamp xd
-void agregarComentario(struct Publicaciones *publicaciones, char autor[]) {
-  if (publicaciones->numComentarios < MAX_COMENTARIOS) {
-    // Crear comentario y darle espacio dinamico acorde al comentario (maximo de
-    // 120 char) el formateo de replit es raro a veces, por eso la forma de
-    // sintaxis de las funciones
-    struct Comentarios *nuevoComentario =
-        (struct Comentario *)malloc(sizeof(struct Comentarios));
-    // Se lee el comentario a través del teclado y se almacena en comentario
-    printf("Escribe lo que quieres comentar: \n");
-    // fgets deja un \n independientemente de lo que lea asi que lo eliminamos.
-    fgets(nuevoComentario->comentario, sizeof(nuevoComentario->comentario),
-          stdin);
-    nuevoComentario->comentario[strcspn(nuevoComentario->comentario, "\n")] =
-        '\0';
-    // Se almacena el autor en autor achi es jajasj que inteligente es el
-    // completador de replit
-    strcpy(nuevoComentario->autor, autor);
-
-    // Se agrega el comentario a la lista
-    nuevoComentario->anterior = NULL;
-    nuevoComentario->siguiente = publicaciones->listaComentarios;
-    // Si ya hay datos en la lista xdd
-    if (publicaciones->listaComentarios != NULL) {
-      publicaciones->listaComentarios->anterior = nuevoComentario;
-    }
-    // Actualizamos el puntero de la lista de comentarios para que apunte al
-    // nuevo comentario
-    publicaciones->listaComentarios = nuevoComentario;
-
-    // Se incrementa acá la cantidad de comentarios
-    publicaciones->numComentarios++;
-  } else {
-    printf("Ya se ha alcanzado el limite de comentarios en este post\n");
+  if (!nuevoComentario) {
+    printf("Error al asignar memoria para el comentario\n");
+    return;
   }
-}
 
-// Funcion para agregar una publicacion, codigo reciclado de lo de arriba jiji
-void agregarPost(struct Publicaciones **timeline, char autor[]) {
-  // Estructura para crear y alojar memoria para un post
-  struct Publicaciones *nuevoPost =
-      (struct Publicaciones *)malloc(sizeof(struct Publicaciones));
+  // Inicializa los datos del nuevo comentario
+  printf("Escribe tu comentario:\n");
+  getchar(); // Limpiar el buffer de entrada
+  fgets(nuevoComentario->comentario, sizeof(nuevoComentario->comentario),
+        stdin);
+  strtok(nuevoComentario->comentario, "\n");
 
-  // Se lee el post por teclado (200 caracteres como twitter)
-  printf("Escribe tu publicación: \n");
-  fgets(nuevoPost->post, sizeof(nuevoPost->post), stdin);
-  // Se elimina el caracter extra de fgets
-  nuevoPost->post[strcspn(nuevoPost->post, "\n")] = '\0';
-  // Se almacena el autor en el post, que util es el autocompletado dio mio
-  strcpy(nuevoPost->autor, autor);
-  nuevoPost->numComentarios = 0;
-  // Se iniciaiza la lista de comentarios del post como tal
-  nuevoPost->listaComentarios = NULL;
-  nuevoPost->siguiente = NULL;
+  strncpy(nuevoComentario->autor, nombreUsuario,
+          sizeof(nuevoComentario->autor));
+  nuevoComentario->idComentario =
+      rand(); // Asigna un identificador único, puedes mejorar esta lógica según
+              // tus necesidades
 
-  nuevoPost->siguiente = *timeline;
-  *timeline = nuevoPost;
-}
-
-void Timeline(struct Publicaciones *timeline, char autor[]) {
-  int idPost = 1;
-  printf("Linea de Tiempo\n");
-  // esto lleva el conteo de los post de modo que se sabe cual fue el primero y
-  // el siguiente xdd, lo mismo para comentarios
-  int i, j = 1;
-  while (timeline != NULL) {
-    printf("[%d] [%s] %s\n", i, timeline->autor, timeline->post);
-
-    // Acá se cicla para poner los comentarios despues de los post (osea abajo
-    // como yo habia dicho arriba)
-    struct Comentarios *comentario = timeline->listaComentarios;
-    while (comentario != NULL) {
-      printf("[%d] [%s] %s\n", comentario->j, comentario->autor,
-             comentario->comentario);
-      comentario = comentario->siguiente;
-      i++;
-    }
-    timeline = timeline->siguiente;
-    idPost++;
+  // Agrega el nuevo comentario a la lista de comentarios de la publicación
+  nuevoComentario->siguiente = publicacion->listaComentarios;
+  nuevoComentario->anterior =
+      NULL; // Puede ser necesario ajustar según la lógica de tu programa
+  if (publicacion->listaComentarios != NULL) {
+    publicacion->listaComentarios->anterior = nuevoComentario;
   }
-  printf("\n\n");
-  // Acá empieza el menú de la linea de tiempo o Feed, escoge el usuario en
-  // teoria que post quiere comentar a través de un switch case
-  int opcion;
+  publicacion->listaComentarios = nuevoComentario;
 
-  printf("Elige el post en el que quieres comentar o presiona la tecla 0 para "
-         "salir: ");
-  scanf("%d", &opcion);
-  // Se busca el post que se quiere comentar
-  if (opcion != 0) {
-    struct Publicaciones *post = timeline;
-    while (post != NULL && post->idPost != opcion) {
-      post = post->siguiente;
+  publicacion->numComentarios++;
+
+  printf("Comentario realizado con exito\n");
+}
+// Funcion para Ver el Feed o Muro, solo se ven posts de amigos y desde aca se
+// pueden comentar los posts [Daniel G.]
+void verMuro(struct Publicaciones *miLineaDeTiempo) {
+  if (sesionActual == NULL) {
+    printf("Inicia sesion para ver el muro\n");
+    return;
+  }
+
+  printf("Muro de %s:\n", sesionActual->user.nombre_usuario);
+
+  struct Publicaciones *publicacionActual = miLineaDeTiempo;
+
+  while (publicacionActual != NULL) {
+    printf("[%s]\n", publicacionActual->autor);
+    printf("%s\n", publicacionActual->post);
+
+    struct Comentarios *comentarioActual = publicacionActual->listaComentarios;
+    printf("Comentarios:\n");
+
+    while (comentarioActual != NULL) {
+      printf("\t[%s]: %s\n", comentarioActual->autor,
+             comentarioActual->comentario);
+      comentarioActual = comentarioActual->siguiente;
     }
-    if (post != NULL) {
-      agregarComentario(post, autor);
+
+    printf("==================================\n");
+
+    publicacionActual = publicacionActual->siguiente;
+  }
+
+  // Permitir al usuario comentar una publicación
+  printf("Selecciona el ID de la publicacion para comentar (o introduce 0 para "
+         "salir): ");
+  int idSeleccionado;
+  scanf("%d", &idSeleccionado);
+
+  if (idSeleccionado != 0) {
+    // Buscar la publicación seleccionada
+    struct Publicaciones *publicacionSeleccionada = miLineaDeTiempo;
+    while (publicacionSeleccionada != NULL &&
+           publicacionSeleccionada->idPost != idSeleccionado) {
+      publicacionSeleccionada = publicacionSeleccionada->siguiente;
+    }
+
+    if (publicacionSeleccionada != NULL) {
+      // Comentar en la publicación seleccionada
+      comentarpost(publicacionSeleccionada, sesionActual->user.nombre_usuario);
     } else {
-      printf("El post no existe \n");
+      printf("Publicacion no encontrada\n");
     }
   }
 }
-*/
+
+// Funcion para publicar en el Feed o Muro [Daniel G.]
+void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
+                    char *nombreUsuario) {
+  // Crea un nuevo nodo de publicación
+  struct Publicaciones *nuevaPublicacion =
+      (struct Publicciones *)malloc(sizeof(struct Publicaciones));
+
+  if (!nuevaPublicacion) {
+    printf("Error al asignar memoria para la publicacion\n");
+    return;
+  }
+
+  // Inicializa los datos de la nueva publicación
+  printf("Escribe tu publicacion:\n");
+  getchar(); // Limpiar el buffer de entrada
+  fgets(nuevaPublicacion->post, sizeof(nuevaPublicacion->post), stdin);
+  strtok(nuevaPublicacion->post, "\n");
+
+  strncpy(nuevaPublicacion->autor, nombreUsuario,
+          sizeof(nuevaPublicacion->autor));
+  nuevaPublicacion->idPost =
+      rand(); // Asigna un identificador único, puedes mejorar esta lógica según
+              // tus necesidades
+  nuevaPublicacion->listaComentarios =
+      NULL; // Inicializa la lista de comentarios
+  nuevaPublicacion->numComentarios = 0;
+
+  // Agrega la nueva publicación a la lista de publicaciones
+  nuevaPublicacion->siguiente = *miLineaDeTiempo;
+  *miLineaDeTiempo = nuevaPublicacion;
+
+  printf("Publicacion realizada con exito\n");
+}
+
 int main() {
   Usuario *raiz = NULL;
 
@@ -442,3 +472,109 @@ int main() {
   free(raiz);
   return 0;
 }
+/*
+Menu aun incompleto, debe ser complementado con el codigo de notificaciones y
+listo [Daniel G.] 
+int main(){
+  struct Publicaciones *miLineaDeTiempo = NULL;
+  Usuario *raiz = NULL;
+  char opcion;
+  do
+  {
+
+    // Menu principal
+    printf("RED SOCIAL UV 2023\n");
+    printf("==================================\n");
+    printf("[1]. Registrar usuario nuevo\n");
+    printf("[2]. Iniciar sesion\n");
+    printf("[3]. Salir\n");
+    printf("==================================\n");
+    printf("Selecciona una opcion: ");
+    // Leer la opción del usuario
+    if (scanf(" %c", &opcion) != 1)
+    {
+      // Limpiar el búfer de entrada en caso de entrada no válida
+      while (getchar() != '\n')
+        ;
+      opcion = '0'; // Establecer una opción no válida para repetir el bucle
+    }
+    // Realiza acciones segun la opcion seleccionada
+    switch (opcion)
+    {
+    case '1':
+      // Llama la funcion para registrar un usuario
+      raiz = registrarNuevoUsuario(raiz);
+      break;
+    case '2':
+      // Llama la funcion para inniciar sesion
+      menuInicioSesion(raiz);
+      if(sesionActual == NULL)
+        break;
+      char opcion2;
+      // esto es cuando se use en gcc, no en replit system("cls");
+      do
+      {
+        printf("==================================\n");
+        printf("Bienvenido a la red social de Luzio UV\n");
+        printf("==================================\n");
+        printf("Elige una opcion, polluelo.\n");
+        printf("[1]. Ver amigos\n");
+        printf("[2]. Notificaciones\n");
+        printf("[3]. Mandar solicitud\n");
+        printf("[4]. Ver muro\n");
+        printf("[5]. Publicar en el muro\n");
+        printf("[6]. Cerrar Sesion\n");
+        printf("==================================\n");
+        // Leer la opción del usuario
+        if (scanf(" %c", &opcion2) != 1)
+        {
+          // Limpiar el búfer de entrada en caso de entrada no válida
+          while (getchar() != '\n')
+            ;
+          opcion2 = '0'; // Establecer una opción no válida para repetir el bucle
+        }
+        switch (opcion2)
+        {
+        case '1':
+          LLAMAR FUNCION DE MOSTRAR AMIGOS
+          break;
+        case '2':
+          LLAMAR FUNCION DE MOSTRAR NOTIF
+          break;
+        case '3':
+          LLAMAR FUNCION DE MANDAR SOLICITUD
+          enviarSolicitud(raiz);
+          break;
+        case '5':
+          publicarEnMuro(&miLineaDeTiempo, sesionActual->user.nombre_usuario);
+          break;
+        case '4':
+          verMuro(miLineaDeTiempo);
+          break;
+        case '6':
+          cerrarSesion();
+          break;
+        default:
+          printf("Ingresa una opcion valida\n");
+          break;
+        }
+
+      } while (opcion2 != '6');
+    case '3':
+      printf("\t\t==================================\n");
+      printf("\t\t\tSaliendo del programa...\n");
+      printf("\t\t==================================\n");
+      break;
+    default:
+
+      printf("tOpcion invalida, intente de nuevo\n");
+
+    }
+  } while (opcion != '3');
+  for (int i = 0; i < sesionActual->num_amigos; i++)
+  {
+    printf("%s\n", sesionActual->amigos[i]->user.nombre_usuario);
+  }
+  return 0;
+}
+*/
