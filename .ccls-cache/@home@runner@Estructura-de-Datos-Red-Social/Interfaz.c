@@ -1,8 +1,17 @@
 /*
 En el caso de la interfaz, se deben considerar los siguientes aspectos:
 1.- El usuario debe iniciar sesion y registrarse al final si viene en el pdf xdd
-2.- Posteriormente entrar en un menu switch case en donde se vean las distintas opciones a explorar, desde ver amigos hasta publicar en el muro, por lo que debe llevar varios cases dependiendo de lo que se quiera hacer.
-3.- La segunda parte del diagrama es bastante explícita en como debería funcionar el muro como tal, intenten seguir la estructura de lo que se ve en el diagrama y lo que se pide como tal, pero dejen en blanco o vacíos espacios como "fechas" o "hora" de posteo, porque aun no sabemos si es posible hacerlo sin una libreria en especifico, el orden puede ser cualquiera pero recuerden que cada interfaz es o la parte que RECIBE un dato o que MANDA un dato a la siguiente funcion del CODIGO, por lo que tienen que ser constantes en lo que deciden MANDAR o RECIBIR en el codigo de la interfaz para adaptarlo en el CODIGO.
+2.- Posteriormente entrar en un menu switch case en donde se vean las distintas
+opciones a explorar, desde ver amigos hasta publicar en el muro, por lo que debe
+llevar varios cases dependiendo de lo que se quiera hacer. 3.- La segunda parte
+del diagrama es bastante explícita en como debería funcionar el muro como tal,
+intenten seguir la estructura de lo que se ve en el diagrama y lo que se pide
+como tal, pero dejen en blanco o vacíos espacios como "fechas" o "hora" de
+posteo, porque aun no sabemos si es posible hacerlo sin una libreria en
+especifico, el orden puede ser cualquiera pero recuerden que cada interfaz es o
+la parte que RECIBE un dato o que MANDA un dato a la siguiente funcion del
+CODIGO, por lo que tienen que ser constantes en lo que deciden MANDAR o RECIBIR
+en el codigo de la interfaz para adaptarlo en el CODIGO.
 */
 
 #include <stdio.h>
@@ -13,11 +22,10 @@ En el caso de la interfaz, se deben considerar los siguientes aspectos:
 #define MAX_NAME_LENGTH 15
 #define MAX_CLAVE_LENGTH 10
 
+// NO SON NECESARIAS LAS FUNCIONES DE INTERFAZ, SOLO PARA EL CODIGO DE PRUEBA
+// LAS FUNCIONES SE ESTAN CREANDO EN EL ARCHIVO MAIN
 
-//NO SON NECESARIAS LAS FUNCIONES DE INTERFAZ, SOLO PARA EL CODIGO DE PRUEBA
-//LAS FUNCIONES SE ESTAN CREANDO EN EL ARCHIVO MAIN
-
-//Funcion principal
+// Funcion principal
 /*
 int main(){
   //Arreglo para almacenar usuarios y variablas relacionadas
@@ -48,11 +56,9 @@ int main(){
         mainRegistrar(usuarios, &numUsuarios);
         break;
       case 2:
-        //Llama la funcion para inniciar sesion y actualiza el estado de la variable loggedIn
-        mainIngresar(usuarios, numUsuarios);
-        loggedIn = 1;
-        break;
-      case 3:
+        //Llama la funcion para inniciar sesion y actualiza el estado de la
+variable loggedIn mainIngresar(usuarios, numUsuarios); loggedIn = 1; break; case
+3:
         //Llama la funcion para ver los usuarios registrados
         mainVerUsuarios(usuarios, numUsuarios);
         break;
@@ -88,8 +94,8 @@ int main(){
         printf("\t\tSelecciona una opcion: ");
         scanf("%d", &opcion);
 
-        switch(opcion){ //Cada que el usuario seleccione una opcion, tendrá un msj de bienvenida para que sepa donde esta
-          case 1:
+        switch(opcion){ //Cada que el usuario seleccione una opcion, tendrá un
+msj de bienvenida para que sepa donde esta case 1:
           printf("\t\t==================================\n");
             printf("\t\tAmigos.\n");
           printf("\t\t==================================\n");
@@ -125,13 +131,14 @@ int main(){
             printf("\t\t\tOpcion invalida, intente de nuevo\n");
             printf("\t\t==================================\n");
         }
-        //Si el usuario selecciona la opcion 6 (cerrar sesion), sale del bucle y regresa al menu principal
-        if(!loggedIn){
-          break;
+        //Si el usuario selecciona la opcion 6 (cerrar sesion), sale del bucle y
+regresa al menu principal if(!loggedIn){ break;
         }
       }
     }
   }
 }
 */
-//ELIMINE TODAS LAS FUNCIONES YA QUE SOLO DEBIAN SER ILUSTRATIVAS YA QUE LA MANERA DE REGISTRAR Y VER LOS USUARIOS REGISTRADOS SE HACE MEDIANTE LAS ESTRUCTURAS DE DATOS ELEGIDAS
+// ELIMINE TODAS LAS FUNCIONES YA QUE SOLO DEBIAN SER ILUSTRATIVAS YA QUE LA
+// MANERA DE REGISTRAR Y VER LOS USUARIOS REGISTRADOS SE HACE MEDIANTE LAS
+// ESTRUCTURAS DE DATOS ELEGIDAS

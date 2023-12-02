@@ -1,6 +1,6 @@
 # TEST README
-Prueba de readme
+Proyecto de Estructura de datos
 
-Prueba de commit y push
+Integrantes: Jesús Eduardo López Rodriguez, Daniel Camacho Vergara
 
-Prueba de commit y push a branch testing
+
