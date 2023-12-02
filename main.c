@@ -474,7 +474,7 @@ int main() {
 }
 /*
 Menu aun incompleto, debe ser complementado con el codigo de notificaciones y
-listo [Daniel G.] 
+listo [Daniel G.]
 int main(){
   struct Publicaciones *miLineaDeTiempo = NULL;
   Usuario *raiz = NULL;
@@ -531,7 +531,8 @@ int main(){
           // Limpiar el búfer de entrada en caso de entrada no válida
           while (getchar() != '\n')
             ;
-          opcion2 = '0'; // Establecer una opción no válida para repetir el bucle
+          opcion2 = '0'; // Establecer una opción no válida para repetir el
+bucle
         }
         switch (opcion2)
         {
