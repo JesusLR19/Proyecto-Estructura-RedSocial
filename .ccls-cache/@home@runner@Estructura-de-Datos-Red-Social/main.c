@@ -453,7 +453,7 @@ void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
 
   printf("Publicacion realizada con exito\n");
 }
-
+/*
 int main() {
   Usuario *raiz = NULL;
 
@@ -470,5 +470,102 @@ int main() {
   mostrarAmigos();
   // cerrarSesion();
   free(raiz);
+  return 0;
+}*/
+int main(){
+  Usuario *raiz = NULL;
+  struct Publicaciones *miLineaDeTiempo = NULL;
+  
+  char opcion;
+  do
+  {
+    // Menu principal
+    //system("clear");
+    printf("RED SOCIAL UV 2023\n");
+    printf("==================================\n");
+    printf("[1]. Registrar usuario nuevo\n");
+    printf("[2]. Iniciar sesion\n");
+    printf("[3]. Salir\n");
+    printf("==================================\n");
+    printf("Selecciona una opcion: ");
+    // Leer la opción del usuario
+    if (scanf(" %c", &opcion) != 1)
+    {
+      // Limpiar el búfer de entrada en caso de entrada no válida
+      while (getchar() != '\n')
+        ;
+      opcion = '0'; // Establecer una opción no válida para repetir el bucle
+    }
+    // Realiza acciones segun la opcion seleccionada
+    switch (opcion)
+    {
+    case '1':
+      raiz = registrarNuevoUsuario(raiz);
+      break;
+    case '2':
+      menuInicioSesion(raiz);
+      if(sesionActual == NULL)
+        break;
+  
+      char opcion2;
+      // esto es cuando se use en gcc, no en replit system("cls");
+      do
+      {
+        system("clear");
+        printf("======================================\n");
+        printf("Bienvenido a la red social de Luzio UV\n");
+        printf("======================================\n");
+        printf("Elige una opcion, polluelo.\n");
+        printf("[1]. Ver amigos\n");
+        printf("[2]. Notificaciones\n");
+        printf("[3]. Mandar solicitud\n");
+        printf("[4]. Ver muro\n");
+        printf("[5]. Publicar en el muro\n");
+        printf("[6]. Cerrar Sesion\n");
+        printf("==================================\n");
+        // Leer la opción del usuario
+        if (scanf(" %c", &opcion2) != 1)
+        {
+          // Limpiar el búfer de entrada en caso de entrada no válida
+          while (getchar() != '\n')
+            ;
+          opcion2 = '0'; // Establecer una opción no válida para repetir el bucle
+        }
+        switch (opcion2)
+        {
+        case '1':
+          mostrarAmigos();
+          break;
+        case '2':
+          mostrarNotif();
+          break;
+        case '3':
+          enviarSolicitud(raiz);
+          break;
+        case '5':
+          //publicarEnMuro(&miLineaDeTiempo, sesionActual->user.nombre_usuario);
+          break;
+        case '4':
+          //verMuro(miLineaDeTiempo);
+          break;
+        case '6':
+          cerrarSesion();
+          break;
+        default:
+          printf("Ingresa una opcion valida\n");
+          break;
+        }
+
+      } while (opcion2 != '6');
+    case '3':
+      printf("Saliendo del programa...\n");
+      break;
+    default:
+
+      printf("Opcion invalida, intente de nuevo\n");
+
+    }
+  } while (opcion != '3');
+
   return 0;
 }
