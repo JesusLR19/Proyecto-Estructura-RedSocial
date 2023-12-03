@@ -1,6 +1,6 @@
 # TEST README
 Proyecto de Estructura de datos
 
-Integrantes: Jesús Eduardo López Rodriguez, Daniel Camacho Vergara
+Integrantes: Jesús Eduardo López Rodriguez, Daniel Camacho Vergara, Roberto Lagunes
 
 
