@@ -4,6 +4,9 @@
 
 Integrantes: 
 Jesús Eduardo López Rodriguez
+
 Daniel Guillermo Camacho Vergara
+
 Roberto Lagunes Álvarez
+
 Dalia Julissa Galindo Castillo
