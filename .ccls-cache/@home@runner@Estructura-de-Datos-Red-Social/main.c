@@ -463,25 +463,11 @@ void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
 
   printf("Publicacion realizada con exito\n");
 }
-/*
-int main() {
-  Usuario *raiz = NULL;
 
-  raiz = registrarNuevoUsuario(raiz);
-  raiz = registrarNuevoUsuario(raiz);
-  // raiz = registrarNuevoUsuario(raiz);
-  menuInicioSesion(raiz);
-  mostrarNotif();
-  enviarSolicitud(raiz);
-  cerrarSesion();
-  menuInicioSesion(raiz);
-  mostrarNotif();
-  aceptarSolicitud(raiz);
-  mostrarAmigos();
-  // cerrarSesion();
-  free(raiz);
-  return 0;
-}*/
+void continuar(){
+  printf("Presiona enter para continuar");
+  while(getchar() != '\n');
+}
 int main() {
   Usuario *raiz = NULL;
   struct Publicaciones *miLineaDeTiempo = NULL;
@@ -489,7 +475,7 @@ int main() {
   char opcion;
   do {
     // Menu principal
-    // system("clear");
+    system("clear");
     printf("RED SOCIAL UV 2023\n");
     printf("==================================\n");
     printf("[1]. Registrar usuario nuevo\n");
@@ -507,11 +493,16 @@ int main() {
     switch (opcion) {
     case '1':
       raiz = registrarNuevoUsuario(raiz);
+      continuar();
       break;
     case '2':
       menuInicioSesion(raiz);
-      if (sesionActual == NULL)
+      continuar();
+      clean_stdin();
+      if (sesionActual == NULL){
         break;
+      }
+        
       char opcion2;
       // esto es cuando se use en gcc, no en replit system("cls");
       do {
@@ -539,6 +530,8 @@ int main() {
         switch (opcion2) {
         case '1':
           mostrarAmigos();
+          printf("Presiona enter para continuar");
+          while(getchar() != '\n');
           break;
         case '2':
           mostrarNotif();
