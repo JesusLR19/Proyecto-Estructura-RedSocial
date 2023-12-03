@@ -73,6 +73,14 @@ typedef struct NodoUsuario {
 
 NodoUsuario *sesionActual; // Creamos un puntero global de tipo NodoUsuario para
                            // ayudarnos a mantener una sesion iniciada
+
+//Funcion para reemplazar el fflush por que aqui en replit no funciona[Jesus E. Lopez]
+void clean_stdin(){
+  int c;
+  do{
+    c = getchar();
+  }while(c !='\n' && c != EOF);
+}
 // Funcion para crear cola [Jesus E. Lopez]
 Cola *crearCola() {
   Cola *c = (Cola *)malloc(sizeof(Cola));
@@ -84,6 +92,7 @@ Cola *crearCola() {
   c->fin = NULL;
   return c;
 }
+
 NodoCola *crearNodo(char *msg) {
   NodoCola *c = (NodoCola *)malloc(sizeof(NodoCola));
   strcpy(c->notif.msg, msg);
@@ -122,7 +131,7 @@ NodoUsuario *registrarNuevoUsuario(NodoUsuario *raiz) {
   nuevoUsuario->izquierda = NULL;
   nuevoUsuario->derecha = NULL;
   // Ingresar los valores para cada campo del nodo usuario
-  fflush(stdin);
+  clean_stdin();
   printf("Ingresa el nombre de usuario: ");
   fgets(nuevoUsuario->user.nombre_usuario,
         sizeof(nuevoUsuario->user.nombre_usuario), stdin);
@@ -531,6 +540,7 @@ int main() {
           break;
         case '2':
           mostrarNotif();
+          
           break;
         case '3':
           enviarSolicitud(raiz);
@@ -559,6 +569,7 @@ int main() {
       printf("Opcion invalida, intente de nuevo\n");
     }
   } while (opcion != '3');
-
+  
+  free(raiz);
   return 0;
 }
