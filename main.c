@@ -35,15 +35,16 @@ struct Publicaciones {
   int numComentarios;
   struct Publicaciones *siguiente;
 };
+//[Jesus E. Lopez]
 typedef struct Notif {
   char msg[MIN];
 } Notif;
-// Nodo de cola simple para las notificaciones
+// Nodo de cola simple para las notificaciones [Jesus E. Lopez]
 typedef struct NodoCola {
   Notif notif;
   struct NodoCola *sgt;
 } NodoCola;
-// Estructura de la cola para las notificaciones
+// Estructura de la cola para las notificaciones [Jesus E. Lopez]
 typedef struct Cola {
   NodoCola *ini;
   NodoCola *fin;
@@ -56,7 +57,7 @@ typedef struct ListaFeed { // El nodo de nuestra lista doblemente enlazada para
   struct ListaFeed *ant;
 } ListaFeed;
 
-// Nodo de arbol para mantener una conexion entre los usuarios
+// Nodo de arbol para mantener una conexion entre los usuarios[Jesus E. Lopez]
 typedef struct NodoUsuario {
   Usuario user;
   struct NodoUsuario *izquierda;
@@ -70,7 +71,7 @@ typedef struct NodoUsuario {
                   // defecto se asignan 2, si requiere mas entonces el espacio
                   // se duplica
 } NodoUsuario;
-
+//[Jesus E. Lopez]
 NodoUsuario *sesionActual; // Creamos un puntero global de tipo NodoUsuario para
                            // ayudarnos a mantener una sesion iniciada
 
@@ -93,14 +94,14 @@ Cola *crearCola() {
   c->fin = NULL;
   return c;
 }
-
+//Funcion para crear un nodo para agregar a la cola [Jesus E. Lopez]
 NodoCola *crearNodo(char *msg) {
   NodoCola *c = (NodoCola *)malloc(sizeof(NodoCola));
   strcpy(c->notif.msg, msg);
   c->sgt = NULL;
   return c;
 }
-
+//Funcion para insertar nodo en el arbol [Jesus E. Lopez]
 NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
   if (raiz == NULL) {    // Verificamos si la raiz es null,
     return nuevoUsuario; // si es NULL significa que esta vacia y entonces
@@ -185,7 +186,7 @@ NodoUsuario *registrarNuevoUsuario(NodoUsuario *raiz) {
   }
   return insertarEnArbol(raiz, nuevoUsuario);
 }
-// Funcion recurisva para busqueda de un nombre de usuario en el arbol binario
+// Funcion recurisva para busqueda de un nombre de usuario en el arbol binario[Jesus E. L.]
 NodoUsuario *buscarUsuarioArbol(NodoUsuario *actual, char *nombre_usuario) {
   if (actual == NULL) {
     return NULL;
@@ -504,7 +505,6 @@ int main() {
       }
         
       char opcion2;
-      // esto es cuando se use en gcc, no en replit system("cls");
       do {
         system("clear");
         printf("======================================\n");
@@ -530,28 +530,31 @@ int main() {
         switch (opcion2) {
         case '1':
           mostrarAmigos();
-          printf("Presiona enter para continuar");
-          while(getchar() != '\n');
+          continuar();
           break;
         case '2':
           mostrarNotif();
-
+          continuar();
           break;
         case '3':
           enviarSolicitud(raiz);
+          continuar();
           break;
         case '5':
-          // publicarEnMuro(&miLineaDeTiempo,
-          // sesionActual->user.nombre_usuario);
+          publicarEnMuro(&miLineaDeTiempo,sesionActual->user.nombre_usuario);
+          continuar();
           break;
         case '4':
-          // verMuro(miLineaDeTiempo);
+          verMuro(miLineaDeTiempo);
+          clean_stdin();
+          continuar();
           break;
         case '6':
           cerrarSesion();
           break;
         default:
           printf("Ingresa una opcion valida\n");
+          continuar();
           break;
         }
 
@@ -560,7 +563,6 @@ int main() {
       printf("Saliendo del programa...\n");
       break;
     default:
-
       printf("Opcion invalida, intente de nuevo\n");
     }
   } while (opcion != '3');
