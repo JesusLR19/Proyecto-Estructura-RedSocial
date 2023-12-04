@@ -94,14 +94,14 @@ Cola *crearCola() {
   c->fin = NULL;
   return c;
 }
-//Funcion para crear un nodo para agregar a la cola [Jesus E. Lopez]
+// Funcion para crear un nodo para agregar a la cola [Jesus E. Lopez]
 NodoCola *crearNodo(char *msg) {
   NodoCola *c = (NodoCola *)malloc(sizeof(NodoCola));
   strcpy(c->notif.msg, msg);
   c->sgt = NULL;
   return c;
 }
-//Funcion para insertar nodo en el arbol [Jesus E. Lopez]
+// Funcion para insertar nodo en el arbol [Jesus E. Lopez]
 NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
   if (raiz == NULL) {    // Verificamos si la raiz es null,
     return nuevoUsuario; // si es NULL significa que esta vacia y entonces
@@ -111,10 +111,10 @@ NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
   // si es menor o mayor que el valor de la raiz
   if (strcmp(nuevoUsuario->user.nombre_usuario, raiz->user.nombre_usuario) <
       0) { // Si strncmp da un valor negativo indica que debe ir del lado
-           // izquierdo de la raiz
+    // izquierdo de la raiz
     raiz->izquierda = insertarEnArbol(raiz->izquierda, nuevoUsuario);
   } else { // Si el valor no es negativo entonces va del lado derecho de la
-           // raiz
+    // raiz
     raiz->derecha = insertarEnArbol(raiz->derecha, nuevoUsuario);
   }
   return raiz; // Retornamos el nodo raiz actualizado
@@ -186,7 +186,8 @@ NodoUsuario *registrarNuevoUsuario(NodoUsuario *raiz) {
   }
   return insertarEnArbol(raiz, nuevoUsuario);
 }
-// Funcion recurisva para busqueda de un nombre de usuario en el arbol binario[Jesus E. L.]
+// Funcion recurisva para busqueda de un nombre de usuario en el arbol
+// binario[Jesus E. L.]
 NodoUsuario *buscarUsuarioArbol(NodoUsuario *actual, char *nombre_usuario) {
   if (actual == NULL) {
     return NULL;
@@ -342,7 +343,9 @@ void mostrarNotif() {
 }
 // Funcion para comentar en los posts, llamada por la funcion VerMuro [Daniel
 // G.]
-void comentarpost(struct Publicaciones *publicacion, char *nombreUsuario) {
+int contadorComentarios = 1;
+
+void comentarPost(struct Publicaciones *publicacion, char *nombreUsuario) {
   // Crea un nuevo nodo de comentario
   struct Comentarios *nuevoComentario =
       (struct Comentarios *)malloc(sizeof(struct Comentarios));
@@ -361,14 +364,12 @@ void comentarpost(struct Publicaciones *publicacion, char *nombreUsuario) {
 
   strncpy(nuevoComentario->autor, nombreUsuario,
           sizeof(nuevoComentario->autor));
-  nuevoComentario->idComentario =
-      rand(); // Asigna un identificador único, puedes mejorar esta lógica según
-              // tus necesidades
+
+  nuevoComentario->idComentario = contadorComentarios++;
 
   // Agrega el nuevo comentario a la lista de comentarios de la publicación
   nuevoComentario->siguiente = publicacion->listaComentarios;
-  nuevoComentario->anterior =
-      NULL; // Puede ser necesario ajustar según la lógica de tu programa
+  nuevoComentario->anterior = NULL;
   if (publicacion->listaComentarios != NULL) {
     publicacion->listaComentarios->anterior = nuevoComentario;
   }
@@ -376,8 +377,10 @@ void comentarpost(struct Publicaciones *publicacion, char *nombreUsuario) {
 
   publicacion->numComentarios++;
 
-  printf("Comentario realizado con exito\n");
+  printf("Comentario realizado con éxito\n");
 }
+// Funcion para Ver el Feed o Muro, solo se ven posts de amigos y desde aca se
+// pueden comentar los posts [Daniel G.]
 // Funcion para Ver el Feed o Muro, solo se ven posts de amigos y desde aca se
 // pueden comentar los posts [Daniel G.]
 void verMuro(struct Publicaciones *miLineaDeTiempo) {
@@ -391,7 +394,7 @@ void verMuro(struct Publicaciones *miLineaDeTiempo) {
   struct Publicaciones *publicacionActual = miLineaDeTiempo;
 
   while (publicacionActual != NULL) {
-    printf("[%s]\n", publicacionActual->autor);
+    printf("[%d] [%s]\n", publicacionActual->idPost, publicacionActual->autor);
     printf("%s\n", publicacionActual->post);
 
     struct Comentarios *comentarioActual = publicacionActual->listaComentarios;
@@ -406,37 +409,41 @@ void verMuro(struct Publicaciones *miLineaDeTiempo) {
     printf("==================================\n");
 
     publicacionActual = publicacionActual->siguiente;
-  }
 
-  // Permitir al usuario comentar una publicación
-  printf("Selecciona el ID de la publicacion para comentar (o introduce 0 para "
-         "salir): ");
-  int idSeleccionado;
-  scanf("%d", &idSeleccionado);
+    // Permitir al usuario comentar una publicación
+    printf(
+        "Selecciona el ID de la publicacion para comentar (o introduce 0 para "
+        "salir): ");
+    int idSeleccionado;
+    scanf("%d", &idSeleccionado);
 
-  if (idSeleccionado != 0) {
-    // Buscar la publicación seleccionada
-    struct Publicaciones *publicacionSeleccionada = miLineaDeTiempo;
-    while (publicacionSeleccionada != NULL &&
-           publicacionSeleccionada->idPost != idSeleccionado) {
-      publicacionSeleccionada = publicacionSeleccionada->siguiente;
-    }
+    if (idSeleccionado != 0) {
+      // Buscar la publicación seleccionada, funciona a través del idPost
+      struct Publicaciones *publicacionSeleccionada = miLineaDeTiempo;
+      while (publicacionSeleccionada != NULL &&
+             publicacionSeleccionada->idPost != idSeleccionado) {
+        publicacionSeleccionada = publicacionSeleccionada->siguiente;
+      }
 
-    if (publicacionSeleccionada != NULL) {
-      // Comentar en la publicación seleccionada
-      comentarpost(publicacionSeleccionada, sesionActual->user.nombre_usuario);
-    } else {
-      printf("Publicacion no encontrada\n");
+      if (publicacionSeleccionada != NULL) {
+        // Comentar en la publicación seleccionada
+        comentarpost(publicacionSeleccionada,
+                     sesionActual->user.nombre_usuario);
+      } else {
+        printf("Publicacion no encontrada\n");
+      }
     }
   }
 }
+// Declaración del contador global
+int contadorPublicaciones = 1;
 
 // Funcion para publicar en el Feed o Muro [Daniel G.]
 void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
                     char *nombreUsuario) {
   // Crea un nuevo nodo de publicación
   struct Publicaciones *nuevaPublicacion =
-      (struct Publicciones *)malloc(sizeof(struct Publicaciones));
+      (struct Publicaciones *)malloc(sizeof(struct Publicaciones));
 
   if (!nuevaPublicacion) {
     printf("Error al asignar memoria para la publicacion\n");
@@ -451,9 +458,7 @@ void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
 
   strncpy(nuevaPublicacion->autor, nombreUsuario,
           sizeof(nuevaPublicacion->autor));
-  nuevaPublicacion->idPost =
-      rand(); // Asigna un identificador único, puedes mejorar esta lógica según
-              // tus necesidades
+  nuevaPublicacion->idPost = contadorPublicaciones++;
   nuevaPublicacion->listaComentarios =
       NULL; // Inicializa la lista de comentarios
   nuevaPublicacion->numComentarios = 0;
@@ -464,10 +469,10 @@ void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
 
   printf("Publicacion realizada con exito\n");
 }
-
-void continuar(){
+void continuar() {
   printf("Presiona enter para continuar");
-  while(getchar() != '\n');
+  while (getchar() != '\n')
+    ;
 }
 int main() {
   Usuario *raiz = NULL;
@@ -500,10 +505,10 @@ int main() {
       menuInicioSesion(raiz);
       continuar();
       clean_stdin();
-      if (sesionActual == NULL){
+      if (sesionActual == NULL) {
         break;
       }
-        
+
       char opcion2;
       do {
         system("clear");
@@ -541,7 +546,7 @@ int main() {
           continuar();
           break;
         case '5':
-          publicarEnMuro(&miLineaDeTiempo,sesionActual->user.nombre_usuario);
+          publicarEnMuro(&miLineaDeTiempo, sesionActual->user.nombre_usuario);
           continuar();
           break;
         case '4':
