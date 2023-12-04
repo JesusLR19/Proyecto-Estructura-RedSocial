@@ -111,10 +111,10 @@ NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
   // si es menor o mayor que el valor de la raiz
   if (strcmp(nuevoUsuario->user.nombre_usuario, raiz->user.nombre_usuario) <
       0) { // Si strncmp da un valor negativo indica que debe ir del lado
-    // izquierdo de la raiz
+           // izquierdo de la raiz
     raiz->izquierda = insertarEnArbol(raiz->izquierda, nuevoUsuario);
   } else { // Si el valor no es negativo entonces va del lado derecho de la
-    // raiz
+           // raiz
     raiz->derecha = insertarEnArbol(raiz->derecha, nuevoUsuario);
   }
   return raiz; // Retornamos el nodo raiz actualizado
@@ -381,8 +381,6 @@ void comentarPost(struct Publicaciones *publicacion, char *nombreUsuario) {
 }
 // Funcion para Ver el Feed o Muro, solo se ven posts de amigos y desde aca se
 // pueden comentar los posts [Daniel G.]
-// Funcion para Ver el Feed o Muro, solo se ven posts de amigos y desde aca se
-// pueden comentar los posts [Daniel G.]
 void verMuro(struct Publicaciones *miLineaDeTiempo) {
   if (sesionActual == NULL) {
     printf("Inicia sesion para ver el muro\n");
@@ -409,32 +407,31 @@ void verMuro(struct Publicaciones *miLineaDeTiempo) {
     printf("==================================\n");
 
     publicacionActual = publicacionActual->siguiente;
+  }
 
-    // Permitir al usuario comentar una publicación
-    printf(
-        "Selecciona el ID de la publicacion para comentar (o introduce 0 para "
-        "salir): ");
-    int idSeleccionado;
-    scanf("%d", &idSeleccionado);
+  // Permitir al usuario comentar una publicación
+  printf("Selecciona el ID de la publicacion para comentar (o introduce 0 para "
+         "salir): ");
+  int idSeleccionado;
+  scanf("%d", &idSeleccionado);
 
-    if (idSeleccionado != 0) {
-      // Buscar la publicación seleccionada, funciona a través del idPost
-      struct Publicaciones *publicacionSeleccionada = miLineaDeTiempo;
-      while (publicacionSeleccionada != NULL &&
-             publicacionSeleccionada->idPost != idSeleccionado) {
-        publicacionSeleccionada = publicacionSeleccionada->siguiente;
-      }
+  if (idSeleccionado != 0) {
+    // Buscar la publicación seleccionada, funciona a través del idPost
+    struct Publicaciones *publicacionSeleccionada = miLineaDeTiempo;
+    while (publicacionSeleccionada != NULL &&
+           publicacionSeleccionada->idPost != idSeleccionado) {
+      publicacionSeleccionada = publicacionSeleccionada->siguiente;
+    }
 
-      if (publicacionSeleccionada != NULL) {
-        // Comentar en la publicación seleccionada
-        comentarpost(publicacionSeleccionada,
-                     sesionActual->user.nombre_usuario);
-      } else {
-        printf("Publicacion no encontrada\n");
-      }
+    if (publicacionSeleccionada != NULL) {
+      // Comentar en la publicación seleccionada
+      comentarPost(publicacionSeleccionada, sesionActual->user.nombre_usuario);
+    } else {
+      printf("Publicacion no encontrada\n");
     }
   }
 }
+
 // Declaración del contador global
 int contadorPublicaciones = 1;
 
@@ -535,14 +532,17 @@ int main() {
         switch (opcion2) {
         case '1':
           mostrarAmigos();
+          clean_stdin();
           continuar();
           break;
         case '2':
           mostrarNotif();
+          clean_stdin();
           continuar();
           break;
         case '3':
           enviarSolicitud(raiz);
+          clean_stdin();
           continuar();
           break;
         case '5':
