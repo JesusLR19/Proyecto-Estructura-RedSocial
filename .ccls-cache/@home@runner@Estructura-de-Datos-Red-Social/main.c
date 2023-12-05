@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 // Estructuras
 #define MAX 200
@@ -10,15 +11,17 @@
 // Estructura del Usuario, dijo la profa que no debe ser dinamica entonces
 // tamaño fijo
 typedef struct {
-
   char nombre_usuario[10];
   char nombre_completo[50];
   char correo_electronico[50];
   char password[20];
 } Usuario;
-/*Estructura para los comentarios de post que como tal van debajo de los post,
- * alpha de comentarios solamente. EDT: Ahora es una lista doblemente enlazada,
- * sugerencia realizada por Jesus Eduardo*/
+/*Estructura para los comentarios de post que como tal van debajo de los post
+ * EDT: Ahora es una lista doblemente enlazada, sugerencia realizada por Jesus
+ * Eduardo*/
+struct Fecha {
+  int dia, mes, anio, hora, minuto, segundo;
+};
 struct Comentarios {
   int idComentario;
   char comentario[MED];
@@ -28,12 +31,15 @@ struct Comentarios {
 };
 
 struct Publicaciones {
-  char post[MAX];
-  char autor[10];
-  int idPost;
-  struct Comentarios *listaComentarios;
-  int numComentarios;
-  struct Publicaciones *siguiente;
+  char post[MAX]; // Se declara tamaño maximo del post
+  char autor[10]; // Se declara tamaño maximo del nombre del autor
+  int idPost;     // Para saber que post es para comentar
+  struct Comentarios
+      *listaComentarios;           // Para ubicar que post se quiere comentar
+  int numComentarios;              // Cuantos comentarios hay en un post
+  struct Publicaciones *siguiente; // Puntero al siguiente post
+  struct Fecha
+      fechapublicacion; // Para adjuntar la fecha de cuando se hizo el post
 };
 //[Jesus E. Lopez]
 typedef struct Notif {
@@ -202,6 +208,17 @@ NodoUsuario *buscarUsuarioArbol(NodoUsuario *actual, char *nombre_usuario) {
     return buscarUsuarioArbol(actual->izquierda, nombre_usuario);
   }
 }
+void imprimirUsuarios(NodoUsuario *raiz){
+  if(raiz == NULL){//Condicion de salida de la recursion
+    return;
+  }
+  //llamada recursiva a la funcion para recorrer por izquierda
+  imprimirUsuarios(raiz->izquierda);
+  printf("Usuario:%s\n",raiz->user.nombre_usuario);
+
+  //llamada recursiva a la funcion para recorrer por derecha
+  imprimirUsuarios(raiz->derecha);
+}
 // Funcion de para iniciar sesion [Jesus E. Lopez]
 void menuInicioSesion(NodoUsuario *raiz) {
   // Definimos variables que ingresara el usuario para buscar y comparar en el
@@ -367,17 +384,45 @@ void comentarPost(struct Publicaciones *publicacion, char *nombreUsuario) {
 
   nuevoComentario->idComentario = contadorComentarios++;
 
-  // Agrega el nuevo comentario a la lista de comentarios de la publicación
+  // Agrega el nuevo comentario al inicio de la lista de comentarios de la
+  // publicación
   nuevoComentario->siguiente = publicacion->listaComentarios;
   nuevoComentario->anterior = NULL;
+
   if (publicacion->listaComentarios != NULL) {
     publicacion->listaComentarios->anterior = nuevoComentario;
   }
+
   publicacion->listaComentarios = nuevoComentario;
 
   publicacion->numComentarios++;
 
   printf("Comentario realizado con éxito\n");
+}
+struct Fecha obtenerFecha() {
+  time_t t; // Variable para el tiempo con time.h, almacena la hora actual desde
+            // el 1 de enero de 1970, despues se le suman años para que sea la
+            // actualidad que crazy.
+  struct tm *fechaActual; // Se crea un puntero para controlar la fecha,
+                          // que contiene la informacion del dia mes y año, tm
+                          // es propia de la libreria time
+  time(&t); // Se obtiene la hora actual en segundos, se almacena en t
+  fechaActual =
+      localtime(&t); // Se convierte de segundos a tiempo local (medio raro)
+
+  struct Fecha fecha;               // Aquí se guarda la información de fecha
+  fecha.dia = fechaActual->tm_mday; // Se almacena el dia
+  fecha.mes = fechaActual->tm_mon + 1; // Se almacenan los meses
+  fecha.anio =
+      fechaActual->tm_year +
+      1900; // Se almacenan el año actual, pero se suma 1900 porque tm_year como
+            // tal siempre devuelve el año desde 1900, dependiendo del equipo
+            // tm_year podria devolver correctamente el año actual, pero
+            // conociendo replit se hará de todas formas la suma.
+  fecha.hora = fechaActual->tm_hour;   // Se almacena la hora
+  fecha.minuto = fechaActual->tm_min;  // Se almacena los minutos
+  fecha.segundo = fechaActual->tm_sec; // Se almacenan los segundos
+  return fecha;                        // Se devuelve la fecha actual completa
 }
 // Funcion para Ver el Feed o Muro, solo se ven posts de amigos y desde aca se
 // pueden comentar los posts [Daniel G.]
@@ -390,23 +435,30 @@ void verMuro(struct Publicaciones *miLineaDeTiempo) {
   printf("Muro de %s:\n", sesionActual->user.nombre_usuario);
 
   struct Publicaciones *publicacionActual = miLineaDeTiempo;
-
   while (publicacionActual != NULL) {
-    printf("[%d] [%s]\n", publicacionActual->idPost, publicacionActual->autor);
-    printf("%s\n", publicacionActual->post);
-
+    struct Fecha fechapost = obtenerFecha();
+    printf("[%02d][%02d][%d]   [%02d]:[%02d]:[%02d]", fechapost.dia,
+           fechapost.mes, fechapost.anio, fechapost.hora, fechapost.minuto,
+           fechapost.segundo); // Se muestra finalmente ajsdjas, dia mes año,
+                               // hora, minutos, segundos en cada post c:
+    printf(" ID[%d] [%s]\n", publicacionActual->idPost,
+           publicacionActual
+               ->autor); // Se muestra el id del post y el autor del post
+    printf("%s\n", publicacionActual->post); // Se muestra el post como tal
     struct Comentarios *comentarioActual = publicacionActual->listaComentarios;
-    printf("Comentarios:\n");
+    printf("Comentarios:\n"); // Se muestran los comentarios de dicho pot
 
     while (comentarioActual != NULL) {
-      printf("\t[%s]: %s\n", comentarioActual->autor,
+      printf("\t[%s]: %s\n",
+             comentarioActual->autor, // Se muestran los siguientes comentarios
              comentarioActual->comentario);
       comentarioActual = comentarioActual->siguiente;
     }
 
     printf("==================================\n");
 
-    publicacionActual = publicacionActual->siguiente;
+    publicacionActual = publicacionActual->siguiente; // Apunta al siguiente
+                                                      // post
   }
 
   // Permitir al usuario comentar una publicación
@@ -434,37 +486,102 @@ void verMuro(struct Publicaciones *miLineaDeTiempo) {
 
 // Declaración del contador global
 int contadorPublicaciones = 1;
-
+int contadorImagenes = 1;
 // Funcion para publicar en el Feed o Muro [Daniel G.]
 void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
                     char *nombreUsuario) {
-  // Crea un nuevo nodo de publicación
-  struct Publicaciones *nuevaPublicacion =
-      (struct Publicaciones *)malloc(sizeof(struct Publicaciones));
-
-  if (!nuevaPublicacion) {
-    printf("Error al asignar memoria para la publicacion\n");
-    return;
+  char opcionm;
+  clean_stdin();
+  // Con esto ahora se apunta al final de la lista y no al inicio de modo que es
+  // Hola-Mundo, y no Mundo-Hola :D
+  struct Publicaciones *ultimoPost = *miLineaDeTiempo;
+  while (ultimoPost != NULL && ultimoPost->siguiente != NULL) {
+    ultimoPost = ultimoPost->siguiente;
   }
+  do {
+    printf("Selecciona 1 para publicar texto en el muro, y 2 para publicar una "
+           "Imagen en el muro: ");
+    scanf("%c", &opcionm);
+    if (opcionm == '1') {
+      // Crea un nuevo nodo de publicación
+      struct Publicaciones *nuevaPublicacion =
+          (struct Publicaciones *)malloc(sizeof(struct Publicaciones));
 
-  // Inicializa los datos de la nueva publicación
-  printf("Escribe tu publicacion:\n");
-  getchar(); // Limpiar el buffer de entrada
-  fgets(nuevaPublicacion->post, sizeof(nuevaPublicacion->post), stdin);
-  strtok(nuevaPublicacion->post, "\n");
+      if (!nuevaPublicacion) {
+        printf("Error al asignar memoria para la publicacion\n");
+        return;
+      }
 
-  strncpy(nuevaPublicacion->autor, nombreUsuario,
-          sizeof(nuevaPublicacion->autor));
-  nuevaPublicacion->idPost = contadorPublicaciones++;
-  nuevaPublicacion->listaComentarios =
-      NULL; // Inicializa la lista de comentarios
-  nuevaPublicacion->numComentarios = 0;
+      // Inicializa los datos de la nueva publicación
+      printf("Escribe tu publicacion:\n");
+      getchar(); // Limpiar el buffer de entrada
+      fgets(nuevaPublicacion->post, sizeof(nuevaPublicacion->post), stdin);
+      strtok(nuevaPublicacion->post, "\n");
 
-  // Agrega la nueva publicación a la lista de publicaciones
-  nuevaPublicacion->siguiente = *miLineaDeTiempo;
-  *miLineaDeTiempo = nuevaPublicacion;
+      strncpy(nuevaPublicacion->autor, nombreUsuario,
+              sizeof(nuevaPublicacion->autor));
+      nuevaPublicacion->idPost = contadorPublicaciones++;
+      nuevaPublicacion->listaComentarios =
+          NULL; // Inicializa la lista de comentarios
+      nuevaPublicacion->numComentarios = 0;
+      // Si está vacio entonces es el primero en a lista
+      if (ultimoPost == NULL) {
+        *miLineaDeTiempo = nuevaPublicacion; // Y asigna el nuevo nodo como el
+                                             // primero en la lista
+      } else {
+        ultimoPost->siguiente =
+            nuevaPublicacion; // Si no esta vacia entonces actualiza al puntero
+                              // siguiente para apuntar al ultimo nodo, de fin a
+                              // inicio
+      }
+      nuevaPublicacion->siguiente =
+          NULL; // Y al final el siguiente apunta a null indicando que es el
+                // ultimo de la lista
+      printf("Publicacion realizada con exito\n");
+      break;
+    } else if (opcionm == '2') {
+      char imagen[20]; // 20 porque ImagenN.jpg tiene 11 caracteres y asi se
+                       // pueden tener numeros de imagen de 2 cifras, no se
+                       // pasen con las imagenes jaja
+      sprintf(
+          imagen, "Imagen%d.jpg",
+          contadorImagenes); // Con esto se forma una cadena con los comonentes
+                             // de la imagen y el contador de imagenes de esta
+                             // manera es posible verlo en el muro.
+      // Crea un nuevo nodo de publicación
+      struct Publicaciones *nuevaPublicacion =
+          (struct Publicaciones *)malloc(sizeof(struct Publicaciones));
 
-  printf("Publicacion realizada con exito\n");
+      if (!nuevaPublicacion) {
+        printf("Error al asignar memoria para la publicacion\n");
+        return;
+      }
+      strncpy(nuevaPublicacion->post, imagen, sizeof(nuevaPublicacion->post));
+      strncpy(nuevaPublicacion->autor, nombreUsuario,
+              sizeof(nuevaPublicacion->autor));
+      nuevaPublicacion->idPost = contadorPublicaciones++;
+      nuevaPublicacion->listaComentarios =
+          NULL; // Inicializa la lista de comentarios
+      nuevaPublicacion->numComentarios = 0;
+      contadorImagenes++; // Se aumenta para que el nombre de la imagen tambien
+                          // sea incrementada
+      // Si está vacio entonces es el primero en a lista
+      if (ultimoPost == NULL) {
+        *miLineaDeTiempo = nuevaPublicacion; // Y asigna el nuevo nodo como el
+                                             // primero en la lista
+      } else {
+        ultimoPost->siguiente =
+            nuevaPublicacion; // Si no esta vacia entonces actualiza al puntero
+                              // siguiente para apuntar al ultimo nodo, de fin a
+                              // inicio
+      }
+
+      printf("Publicacion realizada con exito\n");
+      break;
+    } else {
+      printf("Opcion no valida, vuelva a intentarlo.\n");
+    }
+  } while (1);
 }
 void continuar() {
   printf("Presiona enter para continuar");
@@ -483,7 +600,8 @@ int main() {
     printf("==================================\n");
     printf("[1]. Registrar usuario nuevo\n");
     printf("[2]. Iniciar sesion\n");
-    printf("[3]. Salir\n");
+    printf("[3]. Ver usuarios\n");
+    printf("[4]. Salir\n");
     printf("==================================\n");
     printf("Selecciona una opcion: ");
     // Leer la opción del usuario
@@ -565,12 +683,20 @@ int main() {
 
       } while (opcion2 != '6');
     case '3':
+      //Aqui va funcion para ver todos los usuarios registrados
+      printf("Usuarios registrados en la red social:\n");
+      imprimirUsuarios(raiz);
+      clean_stdin();
+      continuar();
+      break;
+
+    case '4':
       printf("Saliendo del programa...\n");
       break;
     default:
       printf("Opcion invalida, intente de nuevo\n");
     }
-  } while (opcion != '3');
+  } while (opcion != '4');
 
   free(raiz);
   return 0;
