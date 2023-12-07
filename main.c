@@ -208,15 +208,15 @@ NodoUsuario *buscarUsuarioArbol(NodoUsuario *actual, char *nombre_usuario) {
     return buscarUsuarioArbol(actual->izquierda, nombre_usuario);
   }
 }
-void imprimirUsuarios(NodoUsuario *raiz){
-  if(raiz == NULL){//Condicion de salida de la recursion
+void imprimirUsuarios(NodoUsuario *raiz) {
+  if (raiz == NULL) { // Condicion de salida de la recursion
     return;
   }
-  //llamada recursiva a la funcion para recorrer por izquierda
+  // llamada recursiva a la funcion para recorrer por izquierda
   imprimirUsuarios(raiz->izquierda);
-  printf("Usuario:%s\n",raiz->user.nombre_usuario);
+  printf("Usuario:%s\n", raiz->user.nombre_usuario);
 
-  //llamada recursiva a la funcion para recorrer por derecha
+  // llamada recursiva a la funcion para recorrer por derecha
   imprimirUsuarios(raiz->derecha);
 }
 // Funcion de para iniciar sesion [Jesus E. Lopez]
@@ -583,10 +583,22 @@ void publicarEnMuro(struct Publicaciones **miLineaDeTiempo,
     }
   } while (1);
 }
+// Funcion para continuar con la tecla enter [Jesus E. Lopez]
 void continuar() {
   printf("Presiona enter para continuar");
   while (getchar() != '\n')
     ;
+}
+//Funcion para eliminar la primera notificacion en la cola [Jesus E. Lopez]
+void eliminarNotif(){
+  if(sesionActual->notificaciones->ini == NULL){
+    printf("La cola esta vacia\n");
+    return;
+  }
+  NodoCola *temp = sesionActual->notificaciones->ini;
+  sesionActual->notificaciones->ini = sesionActual->notificaciones->ini->sgt;
+  free(temp);
+  printf("Notificacion eliminada satisfactoriamente\n");
 }
 int main() {
   Usuario *raiz = NULL;
@@ -683,7 +695,7 @@ int main() {
 
       } while (opcion2 != '6');
     case '3':
-      //Aqui va funcion para ver todos los usuarios registrados
+      // Aqui va funcion para ver todos los usuarios registrados
       printf("Usuarios registrados en la red social:\n");
       imprimirUsuarios(raiz);
       clean_stdin();
