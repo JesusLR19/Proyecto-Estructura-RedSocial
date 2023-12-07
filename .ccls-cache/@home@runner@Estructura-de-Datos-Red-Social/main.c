@@ -666,9 +666,40 @@ int main() {
           continuar();
           break;
         case '2':
-          mostrarNotif();
           clean_stdin();
-          continuar();
+          char opcion3;
+          do {
+            system("clear");
+            printf("======================================\n");
+            printf("           Notificaciones             \n");
+            printf("======================================\n");
+            printf("Elige una opcion.\n");
+            printf("[1]. Ver notificaciones\n");
+            printf("[2]. Eliminar primera notificacion\n");
+            printf("[3]. Salir del menu notificaciones.\n");
+            if (scanf(" %c", &opcion3) != 1) {
+              // Limpiar el búfer de entrada en caso de entrada no válida
+              while (getchar() != '\n')
+                ;
+              opcion3 =
+                  '0'; // Establecer una opción no válida para repetir el bucle
+            }
+              switch(opcion3){
+                case '1':
+                  mostrarNotif();
+                  clean_stdin();
+                  continuar();
+                  break;
+                case '2':
+                  eliminarNotif();
+                  clean_stdin();
+                  continuar();
+                  break;
+                default:
+                  puts("Opcion no valida");
+                  break;
+              }
+          }while(opcion3 != '3');
           break;
         case '3':
           enviarSolicitud(raiz);
@@ -686,6 +717,8 @@ int main() {
           break;
         case '6':
           cerrarSesion();
+          clean_stdin();
+          continuar();
           break;
         default:
           printf("Ingresa una opcion valida\n");
@@ -694,6 +727,7 @@ int main() {
         }
 
       } while (opcion2 != '6');
+      break;
     case '3':
       // Aqui va funcion para ver todos los usuarios registrados
       printf("Usuarios registrados en la red social:\n");
