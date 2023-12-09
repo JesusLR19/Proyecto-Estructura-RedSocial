@@ -646,9 +646,10 @@ int main() {
         printf("[1]. Ver amigos\n");
         printf("[2]. Notificaciones\n");
         printf("[3]. Mandar solicitud\n");
-        printf("[4]. Ver muro\n");
-        printf("[5]. Publicar en el muro\n");
-        printf("[6]. Cerrar Sesion\n");
+        printf("[4]. Aceptar solicitud\n");
+        printf("[5]. Ver muro\n");
+        printf("[6]. Publicar en el muro\n");
+        printf("[7]. Cerrar Sesion\n");
         printf("==================================\n");
         printf("Elige la opción que desees ejecutar: ");
         // Leer la opción del usuario
@@ -706,16 +707,21 @@ int main() {
           clean_stdin();
           continuar();
           break;
-        case '5':
-          publicarEnMuro(&miLineaDeTiempo, sesionActual->user.nombre_usuario);
+        case '4':
+          aceptarSolicitud(raiz);
+          clean_stdin();
           continuar();
           break;
-        case '4':
+        case '5':
           verMuro(miLineaDeTiempo);
           clean_stdin();
           continuar();
           break;
         case '6':
+          publicarEnMuro(&miLineaDeTiempo, sesionActual->user.nombre_usuario);
+          continuar();
+          break;
+        case '7':
           cerrarSesion();
           clean_stdin();
           continuar();
@@ -726,7 +732,7 @@ int main() {
           break;
         }
 
-      } while (opcion2 != '6');
+      } while (opcion2 != '7');
       break;
     case '3':
       // Aqui va funcion para ver todos los usuarios registrados
