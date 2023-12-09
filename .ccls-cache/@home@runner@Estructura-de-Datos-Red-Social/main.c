@@ -337,12 +337,28 @@ void aceptarSolicitud(NodoUsuario *raiz) {
          usuario->user.nombre_usuario);
 }
 
-// Funcion que recorre los amigos que tienes agregados y los imprime por
-// pantalla[Jesus E. Lopez]
+// Funcion que recorre los amigos que tienes agregados y los imprime por pantalla[Jesus E. Lopez
+//MODIFICACION DE LA FUNCION YA QUE IMPRIMIA POR PANTALLA SIN VERIFICAR QUE HUBIERA UNA CONEXION BIDIRECCIONAL 
 void mostrarAmigos() {
-  printf("Amigos de %s\n", sesionActual->user.nombre_usuario);
-  for (int i = 0; i < sesionActual->num_amigos; i++) {
-    printf("- %s\n", sesionActual->amigos[i]->user.nombre_usuario);
+  if(sesionActual == NULL){
+    puts("Debes iniciar sesion para usar esta funcion");
+    return;
+  }
+  printf("Amigos de %s\n",sesionActual->user.nombre_usuario);
+  //No funcionaba por que me faltaba la condicion para seguir iterando en el ciclo for
+  for(int i = 0; i < sesionActual->num_amigos; i++){
+    NodoUsuario *amigo = sesionActual->amigos[i];
+
+    int esAmigo = 0;
+    for(int j = 0; j < amigo->num_amigos; j++){
+      if(amigo->amigos[j] == sesionActual){
+        esAmigo = 1;
+        break;
+      }
+    }
+    if(esAmigo){
+      printf("- %s\n",amigo->user.nombre_usuario);
+    }
   }
 }
 // Funcion para mostrar las notif. de la sesion actual [Jesus E. Lopez]
