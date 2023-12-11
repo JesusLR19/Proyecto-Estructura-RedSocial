@@ -56,13 +56,6 @@ typedef struct Cola {
   NodoCola *fin;
 } Cola;
 
-typedef struct ListaFeed { // El nodo de nuestra lista doblemente enlazada para
-                           // el timeline de publicaciones
-  struct Publicaciones *p; // Declaramos un puntero de tipo struct publicaciones
-  struct ListaFeed *sgt;
-  struct ListaFeed *ant;
-} ListaFeed;
-
 // Nodo de arbol para mantener una conexion entre los usuarios[Jesus E. Lopez]
 typedef struct NodoUsuario {
   Usuario user;
@@ -107,6 +100,7 @@ NodoCola *crearNodo(char *msg) {
   c->sgt = NULL;
   return c;
 }
+//ESTA FUNCION SE CREO ANTES DE VER ARBOLES EN LA ESCUELA
 // Funcion para insertar nodo en el arbol [Jesus E. Lopez]
 NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
   if (raiz == NULL) {    // Verificamos si la raiz es null,
@@ -117,10 +111,10 @@ NodoUsuario *insertarEnArbol(NodoUsuario *raiz, NodoUsuario *nuevoUsuario) {
   // si es menor o mayor que el valor de la raiz
   if (strcmp(nuevoUsuario->user.nombre_usuario, raiz->user.nombre_usuario) <
       0) { // Si strncmp da un valor negativo indica que debe ir del lado
-           // izquierdo de la raiz
+           // izquierdo de la raiz [MENOR QUE RAIZ]
     raiz->izquierda = insertarEnArbol(raiz->izquierda, nuevoUsuario);
   } else { // Si el valor no es negativo entonces va del lado derecho de la
-           // raiz
+           // raiz [MAYOR QUE RAIZ]
     raiz->derecha = insertarEnArbol(raiz->derecha, nuevoUsuario);
   }
   return raiz; // Retornamos el nodo raiz actualizado
@@ -194,18 +188,18 @@ NodoUsuario *registrarNuevoUsuario(NodoUsuario *raiz) {
 }
 // Funcion recurisva para busqueda de un nombre de usuario en el arbol
 // binario[Jesus E. L.]
-NodoUsuario *buscarUsuarioArbol(NodoUsuario *actual, char *nombre_usuario) {
-  if (actual == NULL) {
+NodoUsuario *buscarUsuarioArbol(NodoUsuario *raiz, char *nombre_usuario) {
+  if (raiz == NULL) {
     return NULL;
   } // Verificamos el nodo actual si es el que estamos buscando lo retornamos
-  if (strcmp(actual->user.nombre_usuario, nombre_usuario) == 0) {
-    return actual;
+  if (strcmp(raiz->user.nombre_usuario, nombre_usuario) == 0) {
+    return raiz;
   } // Decidimos si vamos a recorrer por izquierda o derecha
-  if (strcmp(actual->user.nombre_usuario, nombre_usuario) <
+  if (strcmp(raiz->user.nombre_usuario, nombre_usuario) <
       0) { // Si es menor lo buscamos en la izquierda
-    return buscarUsuarioArbol(actual->derecha, nombre_usuario);
+    return buscarUsuarioArbol(raiz->derecha, nombre_usuario);
   } else { // Si es mayor lo buscamos en la derecha
-    return buscarUsuarioArbol(actual->izquierda, nombre_usuario);
+    return buscarUsuarioArbol(raiz->izquierda, nombre_usuario);
   }
 }
 void imprimirUsuarios(NodoUsuario *raiz) {
@@ -337,27 +331,30 @@ void aceptarSolicitud(NodoUsuario *raiz) {
          usuario->user.nombre_usuario);
 }
 
-// Funcion que recorre los amigos que tienes agregados y los imprime por pantalla[Jesus E. Lopez
-//MODIFICACION DE LA FUNCION YA QUE IMPRIMIA POR PANTALLA SIN VERIFICAR QUE HUBIERA UNA CONEXION BIDIRECCIONAL 
+// Funcion que recorre los amigos que tienes agregados y los imprime por
+// pantalla[Jesus E. Lopez
+// MODIFICACION DE LA FUNCION YA QUE IMPRIMIA POR PANTALLA SIN VERIFICAR QUE
+// HUBIERA UNA CONEXION BIDIRECCIONAL
 void mostrarAmigos() {
-  if(sesionActual == NULL){
+  if (sesionActual == NULL) {
     puts("Debes iniciar sesion para usar esta funcion");
     return;
   }
-  printf("Amigos de %s\n",sesionActual->user.nombre_usuario);
-  //No funcionaba por que me faltaba la condicion para seguir iterando en el ciclo for
-  for(int i = 0; i < sesionActual->num_amigos; i++){
+  printf("Amigos de %s\n", sesionActual->user.nombre_usuario);
+  // No funcionaba por que me faltaba la condicion para seguir iterando en el
+  // ciclo for
+  for (int i = 0; i < sesionActual->num_amigos; i++) {
     NodoUsuario *amigo = sesionActual->amigos[i];
 
     int esAmigo = 0;
-    for(int j = 0; j < amigo->num_amigos; j++){
-      if(amigo->amigos[j] == sesionActual){
+    for (int j = 0; j < amigo->num_amigos; j++) {
+      if (amigo->amigos[j] == sesionActual) {
         esAmigo = 1;
         break;
       }
     }
-    if(esAmigo){
-      printf("- %s\n",amigo->user.nombre_usuario);
+    if (esAmigo) {
+      printf("- %s\n", amigo->user.nombre_usuario);
     }
   }
 }
@@ -605,9 +602,9 @@ void continuar() {
   while (getchar() != '\n')
     ;
 }
-//Funcion para eliminar la primera notificacion en la cola [Jesus E. Lopez]
-void eliminarNotif(){
-  if(sesionActual->notificaciones->ini == NULL){
+// Funcion para eliminar la primera notificacion en la cola [Jesus E. Lopez]
+void eliminarNotif() {
+  if (sesionActual->notificaciones->ini == NULL) {
     printf("La cola esta vacia\n");
     return;
   }
@@ -651,7 +648,6 @@ int main() {
       if (sesionActual == NULL) {
         break;
       }
-
       char opcion2;
       do {
         system("clear");
@@ -701,22 +697,22 @@ int main() {
               opcion3 =
                   '0'; // Establecer una opción no válida para repetir el bucle
             }
-              switch(opcion3){
-                case '1':
-                  mostrarNotif();
-                  clean_stdin();
-                  continuar();
-                  break;
-                case '2':
-                  eliminarNotif();
-                  clean_stdin();
-                  continuar();
-                  break;
-                default:
-                  puts("Opcion no valida");
-                  break;
-              }
-          }while(opcion3 != '3');
+            switch (opcion3) {
+            case '1':
+              mostrarNotif();
+              clean_stdin();
+              continuar();
+              break;
+            case '2':
+              eliminarNotif();
+              clean_stdin();
+              continuar();
+              break;
+            default:
+              puts("Opcion no valida");
+              break;
+            }
+          } while (opcion3 != '3');
           break;
         case '3':
           enviarSolicitud(raiz);
@@ -747,7 +743,6 @@ int main() {
           continuar();
           break;
         }
-
       } while (opcion2 != '7');
       break;
     case '3':
@@ -757,7 +752,6 @@ int main() {
       clean_stdin();
       continuar();
       break;
-
     case '4':
       printf("Saliendo del programa...\n");
       break;
